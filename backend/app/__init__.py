@@ -1,0 +1,1 @@
+"""Beauty booking API (FastAPI)."""

@@ -1,0 +1,29 @@
+# Cursor Rules
+
+## Approach
+You are performing spec-driven development. docs/SPEC.md is the source of truth for everything you build.
+
+- Always align your output with SPEC.md
+- If a request contradicts or is not covered by SPEC.md, stop and flag it before proceeding
+- Never assume or invent requirements not in SPEC.md
+
+## Tech stack
+- Backend: FastAPI (Python)
+- Frontend: Vue 3
+- Database: SQLite
+- ORM: SQLAlchemy
+
+## Code style
+- Keep code simple and readable over clever
+- Add a short comment when a choice is non-obvious
+
+## User story sequencing
+- Before starting any task, check `docs/user-stories/` for stories marked `In progress`. If one exists, continue it before starting anything new.
+- When a story is built, run the tests and validate that acceptance criteria passes. If so, you may consider is complete.
+- When a story is complete, mark it as `Done` and suggest the next `To do` story.
+- When writing user stories, always use `docs/templates/us-template.md` as the template.
+
+## Testing
+- Always generate pytest tests for backend endpoints alongside the code you write
+- Always generate Vitest component tests for Vue components alongside the code you write
+- Tests live next to the code they cover
