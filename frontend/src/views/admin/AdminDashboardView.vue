@@ -93,12 +93,12 @@ onMounted(() => {
 }
 .item {
   padding: 0.35rem 0;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
 }
 .muted {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .error {
-  color: #b91c1c;
+  color: var(--destructive);
 }
 </style>

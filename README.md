@@ -30,6 +30,10 @@ npm run dev
 
 App: [http://127.0.0.1:5173](http://127.0.0.1:5173). Client routes use `/`; back office uses `/admin` and `/admin/login`.
 
+**Brand colors** are defined as CSS variables in [`frontend/src/style.css`](frontend/src/style.css) (`--color-blush`, `--color-cream`, `--color-sand`, `--color-peach`, plus semantic tokens such as `--background`, `--foreground`, `--card`, `--border`). Prefer those variables in new UI instead of hard-coded hex.
+
+**Blank page / `504 (Outdated Optimize Dep)` on `vue.js`:** stop the dev server, run `npm run dev:fresh` (or `npm run dev:force`), then hard-refresh the browser (Ctrl+Shift+R). That clears or rebuilds Vite’s `node_modules/.vite` dependency cache, which can get out of sync after upgrades or if multiple dev servers ran on the same port.
+
 ### Back office login (local dev)
 
 Start the backend first, then open the app and sign in:

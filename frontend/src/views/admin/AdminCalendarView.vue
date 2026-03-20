@@ -87,13 +87,16 @@ onMounted(() => {
 .btn {
   padding: 0.35rem 0.65rem;
   border-radius: 0.35rem;
-  border: 1px solid #cbd5e1;
-  background: #fff;
+  border: 1px solid var(--border);
+  background: var(--background);
   cursor: pointer;
+}
+.btn:hover {
+  background: var(--surface-hover);
 }
 .link {
   margin-left: auto;
-  color: #2563eb;
+  color: var(--color-info);
 }
 .list {
   list-style: none;
@@ -102,19 +105,19 @@ onMounted(() => {
 }
 .item {
   padding: 0.4rem 0;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
 }
 .item.booked {
-  background: #eff6ff;
+  background: var(--color-info-bg);
 }
 .tag {
   margin-left: 0.5rem;
   font-size: 0.85rem;
 }
 .muted {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .error {
-  color: #b91c1c;
+  color: var(--destructive);
 }
 </style>

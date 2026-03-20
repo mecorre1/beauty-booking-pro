@@ -156,13 +156,16 @@ watch(weekLabel, () => {
 
 .week-chip {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
+  background: var(--color-blush);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.375rem;
 }
 
 .btn-ghost {
-  border: 1px solid #cbd5e1;
-  background: #fff;
-  color: #334155;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text);
   padding: 0.35rem 0.65rem;
   border-radius: 0.375rem;
   cursor: pointer;
@@ -170,16 +173,16 @@ watch(weekLabel, () => {
 }
 
 .btn-ghost:hover {
-  background: #f8fafc;
+  background: var(--surface-hover);
 }
 
 .muted {
-  color: #64748b;
+  color: var(--muted-foreground);
   margin: 0.25rem 0;
 }
 
 .error {
-  color: #b91c1c;
+  color: var(--destructive);
 }
 
 .calendar {
@@ -195,8 +198,8 @@ watch(weekLabel, () => {
 }
 
 .day-col {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 0.5rem;
   min-height: 6rem;
@@ -207,21 +210,21 @@ watch(weekLabel, () => {
   flex-direction: column;
   gap: 0.1rem;
   padding: 0.35rem 0.25rem 0.5rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid var(--border);
 }
 
 .dow {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #64748b;
+  color: var(--muted-foreground);
   font-weight: 600;
 }
 
 .dom {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 
 .slot-list {
@@ -236,10 +239,10 @@ watch(weekLabel, () => {
 .slot-card {
   width: 100%;
   text-align: left;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 0.375rem;
   padding: 0.45rem 0.5rem;
-  background: #fff;
+  background: var(--background);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -247,25 +250,25 @@ watch(weekLabel, () => {
 }
 
 .slot-card:hover:not(:disabled) {
-  border-color: #94a3b8;
-  background: #f1f5f9;
+  border-color: var(--border-strong);
+  background: var(--surface-hover);
 }
 
 .slot-card.disabled {
   opacity: 0.55;
   cursor: not-allowed;
-  background: #f1f5f9;
+  background: var(--surface-hover);
 }
 
 .time {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
   font-size: 0.875rem;
 }
 
 .meta {
   font-size: 0.8rem;
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 
 .empty-day {

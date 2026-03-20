@@ -154,10 +154,10 @@ async function cancel() {
   padding: 2rem 1.25rem;
 }
 .muted {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .error {
-  color: #b91c1c;
+  color: var(--destructive);
 }
 .form {
   display: flex;
@@ -165,7 +165,8 @@ async function cancel() {
   gap: 0.75rem;
 }
 .card {
-  background: #f8fafc;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 1rem 1.25rem;
 }
@@ -176,18 +177,20 @@ async function cancel() {
 }
 .input {
   padding: 0.5rem 0.6rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 0.35rem;
+  background: var(--background);
 }
 .btn {
   padding: 0.55rem 1rem;
   border-radius: 0.35rem;
   border: none;
-  background: #0f172a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--primary-foreground);
   cursor: pointer;
 }
 .btn.danger {
-  background: #b91c1c;
+  background: var(--destructive);
+  color: var(--primary-foreground);
 }
 </style>

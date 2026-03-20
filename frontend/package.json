@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:force": "vite --force",
+    "dev:fresh": "node scripts/clear-vite-cache.mjs && vite",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview",
     "test": "vitest run"

@@ -143,12 +143,12 @@ const homeSurchargeLabel = AT_HOME_DISPLAY_SURCHARGE_EUR.toFixed(2)
 .h2 {
   font-size: 1rem;
   margin: 0 0 0.35rem;
-  color: #0f172a;
+  color: var(--foreground);
 }
 
 .card {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 1rem 1.1rem;
   margin-top: 1rem;
@@ -156,18 +156,18 @@ const homeSurchargeLabel = AT_HOME_DISPLAY_SURCHARGE_EUR.toFixed(2)
 
 .recap-line {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
   margin: 0.25rem 0;
 }
 
 .muted {
-  color: #64748b;
+  color: var(--muted-foreground);
   font-size: 0.875rem;
   margin: 0.25rem 0 0;
 }
 
 .error {
-  color: #b91c1c;
+  color: var(--destructive);
   margin-top: 1rem;
 }
 
@@ -185,7 +185,7 @@ const homeSurchargeLabel = AT_HOME_DISPLAY_SURCHARGE_EUR.toFixed(2)
 
 .legend {
   font-weight: 600;
-  color: #334155;
+  color: var(--text);
   padding: 0;
   margin-bottom: 0.5rem;
 }
@@ -202,13 +202,13 @@ const homeSurchargeLabel = AT_HOME_DISPLAY_SURCHARGE_EUR.toFixed(2)
   gap: 0.5rem;
   cursor: pointer;
   font-size: 0.95rem;
-  color: #0f172a;
+  color: var(--foreground);
 }
 
 .warn {
-  color: #b45309;
-  background: #fffbeb;
-  border: 1px solid #fcd34d;
+  color: var(--color-warning-text);
+  background: var(--color-warning-bg);
+  border: 1px solid var(--color-warning-border);
   border-radius: 0.375rem;
   padding: 0.6rem 0.75rem;
   font-size: 0.875rem;
@@ -225,13 +225,13 @@ const homeSurchargeLabel = AT_HOME_DISPLAY_SURCHARGE_EUR.toFixed(2)
 
 .total-label {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--foreground);
 }
 
 .total-value {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #0f172a;
+  color: var(--foreground);
 }
 
 .total-note {
@@ -243,8 +243,8 @@ const homeSurchargeLabel = AT_HOME_DISPLAY_SURCHARGE_EUR.toFixed(2)
   margin-top: 0.5rem;
   align-self: flex-start;
   border: none;
-  background: #0f172a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--primary-foreground);
   padding: 0.55rem 1.1rem;
   border-radius: 0.375rem;
   font-weight: 600;

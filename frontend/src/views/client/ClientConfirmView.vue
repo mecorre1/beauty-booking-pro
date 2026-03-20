@@ -105,7 +105,8 @@ async function submit() {
   padding: 2rem 1.25rem;
 }
 .card {
-  background: #f8fafc;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
@@ -114,7 +115,7 @@ async function submit() {
   margin-bottom: 1rem;
 }
 .muted {
-  color: #64748b;
+  color: var(--muted-foreground);
   margin-top: 0.35rem;
 }
 .form {
@@ -130,16 +131,17 @@ async function submit() {
 }
 .input {
   padding: 0.5rem 0.6rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 0.35rem;
+  background: var(--background);
 }
 .btn {
   margin-top: 0.5rem;
   padding: 0.55rem 1rem;
   border-radius: 0.35rem;
   border: none;
-  background: #0f172a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--primary-foreground);
   cursor: pointer;
 }
 .btn:disabled {
@@ -147,10 +149,10 @@ async function submit() {
   cursor: not-allowed;
 }
 .error {
-  color: #b91c1c;
+  color: var(--destructive);
 }
 .link {
   word-break: break-all;
-  color: #2563eb;
+  color: var(--color-info);
 }
 </style>

@@ -112,7 +112,8 @@ onMounted(() => {
   padding: 2rem 1.25rem;
 }
 .card {
-  background: #f8fafc;
+  background: var(--card);
+  border: 1px solid var(--border);
   border-radius: 0.5rem;
   padding: 1rem 1.25rem;
   margin-bottom: 1rem;
@@ -126,7 +127,7 @@ onMounted(() => {
   padding-left: 1.2rem;
 }
 .muted {
-  color: #64748b;
+  color: var(--muted-foreground);
 }
 .label {
   display: flex;
@@ -136,27 +137,29 @@ onMounted(() => {
 }
 .input {
   padding: 0.5rem 0.6rem;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--border);
   border-radius: 0.35rem;
+  background: var(--background);
 }
 .btn {
   padding: 0.55rem 1rem;
   border-radius: 0.35rem;
   border: none;
-  background: #0f172a;
-  color: #fff;
+  background: var(--primary);
+  color: var(--primary-foreground);
   cursor: pointer;
 }
 .btn.secondary {
-  background: #334155;
+  background: var(--secondary);
+  color: var(--secondary-foreground);
 }
 .error {
-  color: #b91c1c;
+  color: var(--destructive);
 }
 .ok {
-  color: #15803d;
+  color: var(--color-success);
 }
 .link {
-  color: #2563eb;
+  color: var(--color-info);
 }
 </style>

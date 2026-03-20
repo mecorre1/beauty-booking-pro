@@ -1,30 +1,61 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-import AdminCalendarView from '../views/admin/AdminCalendarView.vue'
-import AdminDashboardView from '../views/admin/AdminDashboardView.vue'
-import AdminLoginView from '../views/admin/AdminLoginView.vue'
-import AdminPricingView from '../views/admin/AdminPricingView.vue'
-import AdminSalonView from '../views/admin/AdminSalonView.vue'
-import AdminScheduleView from '../views/admin/AdminScheduleView.vue'
-import ClientConfirmView from '../views/client/ClientConfirmView.vue'
-import ClientEditView from '../views/client/ClientEditView.vue'
-import ClientHomeView from '../views/client/ClientHomeView.vue'
-import ClientServiceView from '../views/client/ClientServiceView.vue'
 import { getAdminToken } from '../api/admin'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: '/', name: 'client-home', component: ClientHomeView },
-    { path: '/book/service', name: 'book-service', component: ClientServiceView },
-    { path: '/book/confirm', name: 'book-confirm', component: ClientConfirmView },
-    { path: '/book/edit/:token', name: 'book-edit', component: ClientEditView, props: true },
-    { path: '/admin/login', name: 'admin-login', component: AdminLoginView },
-    { path: '/admin', name: 'admin-dashboard', component: AdminDashboardView },
-    { path: '/admin/calendar', name: 'admin-calendar', component: AdminCalendarView },
-    { path: '/admin/salon', name: 'admin-salon', component: AdminSalonView },
-    { path: '/admin/schedule', name: 'admin-schedule', component: AdminScheduleView },
-    { path: '/admin/pricing', name: 'admin-pricing', component: AdminPricingView },
+    {
+      path: '/',
+      name: 'client-home',
+      component: () => import('../views/client/ClientHomeView.vue'),
+    },
+    {
+      path: '/book/service',
+      name: 'book-service',
+      component: () => import('../views/client/ClientServiceView.vue'),
+    },
+    {
+      path: '/book/confirm',
+      name: 'book-confirm',
+      component: () => import('../views/client/ClientConfirmView.vue'),
+    },
+    {
+      path: '/book/edit/:token',
+      name: 'book-edit',
+      component: () => import('../views/client/ClientEditView.vue'),
+      props: true,
+    },
+    {
+      path: '/admin/login',
+      name: 'admin-login',
+      component: () => import('../views/admin/AdminLoginView.vue'),
+    },
+    {
+      path: '/admin',
+      name: 'admin-dashboard',
+      component: () => import('../views/admin/AdminDashboardView.vue'),
+    },
+    {
+      path: '/admin/calendar',
+      name: 'admin-calendar',
+      component: () => import('../views/admin/AdminCalendarView.vue'),
+    },
+    {
+      path: '/admin/salon',
+      name: 'admin-salon',
+      component: () => import('../views/admin/AdminSalonView.vue'),
+    },
+    {
+      path: '/admin/schedule',
+      name: 'admin-schedule',
+      component: () => import('../views/admin/AdminScheduleView.vue'),
+    },
+    {
+      path: '/admin/pricing',
+      name: 'admin-pricing',
+      component: () => import('../views/admin/AdminPricingView.vue'),
+    },
   ],
 })
 

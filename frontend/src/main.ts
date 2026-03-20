@@ -6,4 +6,13 @@ import './style.css'
 
 const app = createApp(App)
 app.use(router)
-app.mount('#app')
+
+if (import.meta.env.DEV) {
+  app.config.errorHandler = (err, instance, info) => {
+    console.error('[Vue error]', err, info, instance)
+  }
+}
+
+void router.isReady().then(() => {
+  app.mount('#app')
+})
