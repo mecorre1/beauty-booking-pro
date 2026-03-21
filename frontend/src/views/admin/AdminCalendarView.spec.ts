@@ -10,32 +10,66 @@ vi.mock('../../api/admin', () => ({
 import AdminCalendarView from './AdminCalendarView.vue'
 
 describe('AdminCalendarView', () => {
-  it('loads week and styles booked rows; prev triggers another fetch', async () => {
-    fetchAdmin.mockResolvedValue(
-      new Response(
-        JSON.stringify({
-          slots: [
-            {
-              id: 1,
-              date: '2040-01-01',
-              start_time: '09:00:00',
-              end_time: '10:00:00',
-              is_available: false,
-              booking_id: 42,
-            },
-          ],
-        }),
-        { status: 200 },
-      ),
-    )
+  it('loads schedule and renders working hours, exceptions and bookings', async () => {
+    fetchAdmin.mockImplementation((path: string) => {
+      if (path.includes('/schedule?')) {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({
+              week: '2040-01',
+              days: [
+                {
+                  date: '2040-01-01',
+                  day_of_week: 0,
+                  open_time: '09:00:00',
+                  close_time: '18:00:00',
+                },
+              ],
+              exceptions: [
+                {
+                  id: 7,
+                  start: '2040-01-01T12:00:00',
+                  end: '2040-01-01T13:00:00',
+                  comment: 'Break',
+                  created_at: '2040-01-01T08:00:00',
+                },
+              ],
+              bookings: [
+                {
+                  id: 42,
+                  start: '2040-01-01T10:00:00',
+                  end: '2040-01-01T10:45:00',
+                  client_name: 'Ada',
+                  client_email: 'a@a.com',
+                  client_phone: '555',
+                  service_type: 'haircut',
+                  location: 'salon',
+                  status: 'confirmed',
+                  slot_id: 1,
+                },
+              ],
+            }),
+            { status: 200 },
+          ),
+        )
+      }
+      return Promise.resolve(new Response('', { status: 404 }))
+    })
 
-    const wrapper = mount(AdminCalendarView)
+    const wrapper = mount(AdminCalendarView, {
+      global: { stubs: { RouterLink: true } },
+    })
     await flushPromises()
 
-    expect(fetchAdmin).toHaveBeenCalled()
+    expect(fetchAdmin).toHaveBeenCalledWith(expect.stringContaining('/schedule?week='))
+    expect(wrapper.find('.layer-working').exists()).toBe(true)
+    expect(wrapper.find('.block-exception').exists()).toBe(true)
+    expect(wrapper.find('.block-booking').exists()).toBe(true)
+    expect(wrapper.text()).toContain('Ada')
+    expect(wrapper.text()).toContain('Exceptions this week')
+
+    await wrapper.get('.block-booking').trigger('click')
     expect(wrapper.text()).toContain('Booking #42')
-    const booked = wrapper.find('.item.booked')
-    expect(booked.exists()).toBe(true)
 
     const callsBefore = fetchAdmin.mock.calls.length
     await wrapper.get('button.btn').trigger('click')

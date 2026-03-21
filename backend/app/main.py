@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.routers import (
     admin_auth,
     admin_bookings,
+    admin_exceptions,
     admin_salon,
     admin_schedule,
     admin_services,
@@ -41,6 +42,7 @@ def create_app(*, init_db_on_startup: bool = True) -> FastAPI:
     application.include_router(admin_salon.router, prefix="/api/admin/salon", tags=["admin-salon"])
     application.include_router(admin_services.router, prefix="/api/admin/services", tags=["admin-services"])
     application.include_router(admin_schedule.router, prefix="/api/admin/schedule", tags=["admin-schedule"])
+    application.include_router(admin_exceptions.router, prefix="/api/admin/exceptions", tags=["admin-exceptions"])
     application.include_router(admin_bookings.router, prefix="/api/admin/bookings", tags=["admin-bookings"])
 
     @application.get("/health")
