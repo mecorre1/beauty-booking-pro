@@ -37,3 +37,11 @@ class SlotPublic(BaseModel):
     duration_minutes: int
     price: float
     is_available: bool
+
+
+class AvailabilityWindowPublic(BaseModel):
+    """Contiguous bookable span for a service (US-015); times are wall-clock on that date."""
+
+    date: date
+    start_time: str = Field(description="HH:MM:SS")
+    end_time: str = Field(description="HH:MM:SS")

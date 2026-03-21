@@ -26,7 +26,8 @@ from app.schemas.public_booking import (
     UpdateBookingBody,
 )
 from app.schemas.public_services import ServicePublic
-from app.schemas.public_slots import SlotPublic, bounds_for_iso_week_string
+from app.schemas.public_slots import AvailabilityWindowPublic, SlotPublic, bounds_for_iso_week_string
+from app.services.availability import compute_bookable_windows
 from app.services.booking_logic import (
     assert_slot_fits_service,
     has_time_conflict,
@@ -76,6 +77,35 @@ def list_public_slots(
         .order_by(Slot.date, Slot.start_time),
     ).all()
     return [_slot_to_public(db, s) for s in rows]
+
+
+@router.get("/availability", response_model=list[AvailabilityWindowPublic])
+def get_public_availability(
+    service_id: int = Query(..., ge=1),
+    week: str = Query(..., description="ISO week YYYY-WW, e.g. 2026-11"),
+    db: Session = Depends(get_db),
+) -> list[AvailabilityWindowPublic]:
+    try:
+        monday, sunday = bounds_for_iso_week_string(week)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=422,
+            detail=[{"loc": ["query", "week"], "msg": str(e), "type": "value_error"}],
+        ) from e
+
+    try:
+        raw = compute_bookable_windows(db, service_id=service_id, monday=monday, sunday=sunday)
+    except ValueError as e:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail=str(e)) from e
+
+    return [
+        AvailabilityWindowPublic(
+            date=a0.date(),
+            start_time=a0.time().isoformat(timespec="seconds"),
+            end_time=a1.time().isoformat(timespec="seconds"),
+        )
+        for a0, a1 in raw
+    ]
 
 
 @router.get("/services", response_model=list[ServicePublic])
