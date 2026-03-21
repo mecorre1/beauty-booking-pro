@@ -1,7 +1,6 @@
 """US-008/009/010/011/012: admin endpoints require auth; basic happy paths."""
 
 from datetime import date, time
-from decimal import Decimal
 
 from sqlalchemy import select
 
@@ -46,7 +45,6 @@ def test_admin_bookings_lists_created_booking(client, db_session):
         start_time=time(9, 0),
         end_time=time(12, 0),
         is_available=True,
-        price=Decimal("40.00"),
     )
     db_session.add(slot)
     db_session.commit()

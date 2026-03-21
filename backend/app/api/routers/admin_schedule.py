@@ -12,8 +12,6 @@ from app.models.booking import Booking
 from app.models.schedule import Slot, TemplateSlot, WeeklyTemplate
 from app.models.user import User
 from app.schemas.public_slots import bounds_for_iso_week_string
-from app.services.pricing import min_resolved_price_across_services
-
 router = APIRouter()
 
 
@@ -164,15 +162,12 @@ def apply_template(
         day = monday + timedelta(days=ts.day_of_week)
         start = ts.start_time
         end = _end_time(start, ts.duration_minutes)
-        at_dt = datetime.combine(day, start)
-        display_price = min_resolved_price_across_services(db, at_dt)
         row = Slot(
             date=day,
             start_time=start,
             end_time=end,
             is_available=True,
             source_template_id=template.id,
-            price=display_price,
         )
         db.add(row)
         created += 1

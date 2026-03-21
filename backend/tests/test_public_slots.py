@@ -1,5 +1,4 @@
 from datetime import date, time, timedelta
-from decimal import Decimal
 
 from app.models.schedule import Slot
 
@@ -21,14 +20,12 @@ def test_get_slots_returns_correct_week(client, db_session):
         start_time=time(9, 0),
         end_time=time(9, 45),
         is_available=True,
-        price=Decimal("45.00"),
     )
     other_week = Slot(
         date=week_b_date,
         start_time=time(10, 0),
         end_time=time(10, 30),
         is_available=False,
-        price=Decimal("50.00"),
     )
     db_session.add_all([in_week, other_week])
     db_session.commit()
@@ -73,7 +70,6 @@ def test_get_slots_ordering(client, db_session):
             start_time=time(14, 0),
             end_time=time(15, 0),
             is_available=True,
-            price=Decimal("40.00"),
         ),
     )
     db_session.add(
@@ -82,7 +78,6 @@ def test_get_slots_ordering(client, db_session):
             start_time=time(9, 0),
             end_time=time(10, 0),
             is_available=True,
-            price=Decimal("40.00"),
         ),
     )
     db_session.commit()

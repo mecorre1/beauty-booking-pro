@@ -1,8 +1,6 @@
 """US-004/005/006: public booking lifecycle."""
 
 from datetime import date, time
-from decimal import Decimal
-
 from sqlalchemy import select
 
 from app.models.booking import Booking, BookingStatus, Location
@@ -26,7 +24,6 @@ def _make_slot(
         start_time=st,
         end_time=en,
         is_available=avail,
-        price=Decimal("40.00"),
     )
     db_session.add(s)
     db_session.commit()
@@ -83,14 +80,12 @@ def test_home_booking_blocks_overlap(client, db_session):
         start_time=time(9, 0),
         end_time=time(9, 45),
         is_available=True,
-        price=Decimal("40.00"),
     )
     s2 = Slot(
         date=date(2030, 7, 1),
         start_time=time(9, 45),
         end_time=time(10, 30),
         is_available=True,
-        price=Decimal("40.00"),
     )
     db_session.add_all([s1, s2])
     db_session.commit()

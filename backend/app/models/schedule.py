@@ -1,9 +1,8 @@
 """ORM: WeeklyTemplate, TemplateSlot, Slot per SPEC."""
 
 from datetime import date, time
-from decimal import Decimal
 
-from sqlalchemy import Boolean, Date, ForeignKey, Integer, Numeric, String, Time
+from sqlalchemy import Boolean, Date, ForeignKey, Integer, String, Time
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db import Base
@@ -36,7 +35,7 @@ class TemplateSlot(Base):
 
 
 class Slot(Base):
-    """Bookable time window. `price` is legacy display column; US-012 resolves from PriceEntry."""
+    """Bookable time window; display price comes from PriceEntry (US-012)."""
 
     __tablename__ = "slots"
 
@@ -45,8 +44,10 @@ class Slot(Base):
     start_time: Mapped[time] = mapped_column(Time, nullable=False)
     end_time: Mapped[time] = mapped_column(Time, nullable=False)
     is_available: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
-    source_template_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
-    price: Mapped[Decimal] = mapped_column(Numeric(10, 2), nullable=False)
+    source_template_id: Mapped[int | None] = mapped_column(
+        ForeignKey("weekly_templates.id"),
+        nullable=True,
+    )
 
     booking: Mapped["Booking | None"] = relationship(  # noqa: F821
         back_populates="slot",

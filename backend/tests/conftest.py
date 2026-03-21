@@ -18,7 +18,10 @@ def db_session() -> Session:
         connect_args={"check_same_thread": False},
         poolclass=StaticPool,
     )
-    Base.metadata.create_all(bind=engine)
+    from app.db import run_migrations
+
+    with engine.connect() as conn:
+        run_migrations(connection=conn)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = SessionLocal()
     from app.seed_price_entries import seed_price_entries

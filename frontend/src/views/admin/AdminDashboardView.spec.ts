@@ -13,6 +13,8 @@ vi.mock('../../api/admin', () => ({
               slot_start_time: '09:00:00',
               client_name: 'Ada',
               client_email: 'ada@test.com',
+              client_phone: '555',
+              client_note: null,
               status: 'confirmed',
               service_type: 'haircut',
             },

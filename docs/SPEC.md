@@ -13,26 +13,40 @@ The hairdresser manages her calendar and bookings via a back office.
 
 ## Client-facing flow
 
-### 1. Browse availability
-- Client lands on a calendar view showing available slots
-- Each slot displays its price and duration
+### 1. Landing page
+- Marketing content (out of scope for MVP)
+- Entry point to the booking flow
 
-### 2. Configure the session
-- Service type (each has a base duration and price):
+### 2. Service selection
+- Client selects gender first (Male / Female) - impacts service duration
+- Client selects service type via clickable cards (not dropdowns):
   - Regular haircut
   - Haircut + hairdressing
   - Color
-- Gender: Male / Female (duration may vary by gender)
-- Location: At the salon / At home
-  - At-home adds an extra charge and extra internal buffer time (travel back and forth)
-  - The buffer time is internal only, not shown to clients
+- Client selects location: At the salon / At home
+  - At-home adds an extra charge and internal travel buffer (not shown to client)
 
-### 3. Confirm booking
+### 3. Slot selection
+- Weekly calendar view of available slots, filtered by selected service duration
+- Client can navigate forward and backward by week
+- Weeks run Monday to Sunday
+- Slots grouped by time of day:
+  - Morning: 00:00 - 11:59
+  - Afternoon: 12:00 - 16:59
+  - Evening: 17:00 - 23:59
+- Empty groups are hidden
+- Available slots derived from: weekly schedule minus exceptions minus existing bookings
+
+### 4. Confirmation
+- Displays: service type, gender, location, duration, price
 - Client fills in: name, email, phone
+- Checkbox: agreement to terms and conditions (required) - placeholder content for MVP
+- Checkbox: opt-in to marketing communications (optional) - stored on client record
 - Confirmation email sent on booking
 - Client receives a link to edit or cancel their booking (no deadline)
+- Service description shown post-confirmation only (to maximize conversion)
 
-### 4. Editing a booking
+### 5. Editing a booking
 - Client can change everything (service, slot, location, contact info)
 - During editing, the client's current slot is treated as available
 - The rest of the flow is identical to a new booking
@@ -114,13 +128,48 @@ The hairdresser manages her calendar and bookings via a back office.
 - is_available
 - source_template_id (nullable, for reference only)
 
+### Client
+- id
+- email (unique, primary identifier)
+- name
+- phone
+- marketing_opt_in (bool, default false)
+- created_at
+- (future: login/auth out of scope for MVP)
+
+### WeeklySchedule
+- day_of_week (0-6)
+- open_time
+- close_time
+
+### AvailabilityException
+- id
+- start (datetime)
+- end (datetime)
+- created_at
+- comment (nullable, free text)
+
+### BookingMedia
+- id (used as filename in storage, e.g. `{media_folder}/{id}`)
+- media_type: enum (current_hairstyle | inspiration)
+- file_name (original filename for display)
+- created_at
+
 ### Booking
+- id
 - slot_id
 - service_id
+- client_id (FK to Client)
 - price_at_booking (snapshot)
 - salon_address_at_booking (snapshot)
 - location: enum (salon | home)
 - home_address (nullable)
-- client_name, client_email, client_phone
 - status: enum (confirmed | edited | cancelled)
 - edit_token (unique link for client self-service)
+- current_hairstyle_media_id (nullable, FK to BookingMedia)
+- inspiration_media_id (nullable, FK to BookingMedia)
+
+## Storage
+- Images are stored in a pluggable storage backend
+- Local dev uses local filesystem, production uses object storage (e.g. S3, Cloudflare R2)
+- Files are stored as `{media_folder}/{media_id}` - no path stored in DB, folder is config-driven

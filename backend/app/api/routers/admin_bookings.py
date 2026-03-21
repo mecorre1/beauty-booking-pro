@@ -27,6 +27,7 @@ class BookingAdminOut(BaseModel):
     client_name: str
     client_email: str
     client_phone: str
+    client_note: str | None
     slot_date: date
     slot_start_time: str
     service_type: str
@@ -40,13 +41,17 @@ def list_bookings(
 ) -> list[BookingAdminOut]:
     rows = db.scalars(
         select(Booking)
-        .options(selectinload(Booking.slot), selectinload(Booking.service))
+        .options(
+            selectinload(Booking.slot),
+            selectinload(Booking.service),
+            selectinload(Booking.client),
+        )
         .order_by(Booking.id),
     ).all()
     now = datetime.now()
     out: list[BookingAdminOut] = []
     for b in rows:
-        if b.slot is None or b.service is None:
+        if b.slot is None or b.service is None or b.client is None:
             continue
         dt = datetime.combine(b.slot.date, b.slot.start_time)
         if upcoming is True and dt < now:
@@ -60,9 +65,10 @@ def list_bookings(
                 service_id=b.service_id,
                 location=b.location.value,
                 status=b.status,
-                client_name=b.client_name,
-                client_email=b.client_email,
-                client_phone=b.client_phone,
+                client_name=b.client.name,
+                client_email=b.client.email,
+                client_phone=b.client.phone,
+                client_note=b.client_note,
                 slot_date=b.slot.date,
                 slot_start_time=b.slot.start_time.isoformat(),
                 service_type=b.service.type.value,

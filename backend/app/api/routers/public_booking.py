@@ -13,6 +13,8 @@ import app.email as email_pkg
 from app.api.deps import get_db
 from app.config import settings
 from app.models.booking import Booking, BookingStatus, Location
+from app.models.booking_media import BookingMedia, MediaType
+from app.models.client import Client
 from app.models.salon import Salon
 from app.models.schedule import Slot
 from app.models.service import Service
@@ -110,6 +112,37 @@ def _total_price(db: Session, service_id: int, slot: Slot, location: Location) -
     return base
 
 
+def _get_or_create_client(
+    db: Session,
+    *,
+    email: str,
+    name: str,
+    phone: str,
+    marketing_opt_in: bool,
+) -> Client:
+    c = db.scalar(select(Client).where(Client.email == email))
+    if c is not None:
+        c.name = name
+        c.phone = phone
+        if marketing_opt_in:
+            c.marketing_opt_in = True
+        return c
+    c = Client(email=email, name=name, phone=phone, marketing_opt_in=marketing_opt_in)
+    db.add(c)
+    db.flush()
+    return c
+
+
+def _validate_optional_media(db: Session, media_id: int | None, expected: MediaType) -> None:
+    if media_id is None:
+        return
+    m = db.get(BookingMedia, media_id)
+    if m is None:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Media not found")
+    if m.media_type != expected:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail="Media type mismatch for booking")
+
+
 def _send_confirmation_email(to: str, token: str) -> None:
     link = f"{settings.public_app_base_url.rstrip('/')}/book/edit/{token}"
     email_pkg.default_email_sender.send(
@@ -120,7 +153,7 @@ def _send_confirmation_email(to: str, token: str) -> None:
 
 
 @router.post("/bookings", response_model=BookingPublicOut, status_code=status.HTTP_201_CREATED)
-def create_booking(body: CreateBookingBody, db: Session = Depends(get_db)) -> Booking:
+def create_booking(body: CreateBookingBody, db: Session = Depends(get_db)) -> BookingPublicOut:
     if body.location == Location.home and not (body.home_address and body.home_address.strip()):
         raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, detail="home_address required for home visits")
 
@@ -143,41 +176,57 @@ def create_booking(body: CreateBookingBody, db: Session = Depends(get_db)) -> Bo
     if has_time_conflict(db, proposed):
         raise HTTPException(status.HTTP_409_CONFLICT, detail="Time conflict with another booking")
 
+    _validate_optional_media(db, body.current_hairstyle_media_id, MediaType.current_hairstyle)
+    _validate_optional_media(db, body.inspiration_media_id, MediaType.inspiration)
+
     token = secrets.token_urlsafe(24)
     address_snap = _salon_snapshot(db)
     price = _total_price(db, body.service_id, slot, body.location)
+    cli = _get_or_create_client(
+        db,
+        email=str(body.client_email),
+        name=body.client_name,
+        phone=body.client_phone,
+        marketing_opt_in=body.marketing_opt_in,
+    )
 
     b = Booking(
         slot_id=slot.id,
         service_id=body.service_id,
+        client_id=cli.id,
         price_at_booking=price,
         salon_address_at_booking=address_snap,
         location=body.location,
         home_address=body.home_address.strip() if body.home_address else None,
-        client_name=body.client_name,
-        client_email=str(body.client_email),
-        client_phone=body.client_phone,
         status=BookingStatus.confirmed,
         edit_token=token,
+        client_note=body.client_note.strip() if body.client_note and body.client_note.strip() else None,
+        current_hairstyle_media_id=body.current_hairstyle_media_id,
+        inspiration_media_id=body.inspiration_media_id,
     )
     slot.is_available = False
     db.add(b)
     db.commit()
     db.refresh(b)
-    _send_confirmation_email(b.client_email, token)
-    return b
+    _send_confirmation_email(cli.email, token)
+    return _booking_to_public(b)
 
 
 def _booking_to_public(b: Booking) -> BookingPublicOut:
+    c = b.client
     return BookingPublicOut(
         id=b.id,
         slot_id=b.slot_id,
         service_id=b.service_id,
         location=b.location,
         home_address=b.home_address,
-        client_name=b.client_name,
-        client_email=b.client_email,
-        client_phone=b.client_phone,
+        client_name=c.name,
+        client_email=c.email,
+        client_phone=c.phone,
+        marketing_opt_in=c.marketing_opt_in,
+        client_note=b.client_note,
+        current_hairstyle_media_id=b.current_hairstyle_media_id,
+        inspiration_media_id=b.inspiration_media_id,
         status=b.status,
         price_at_booking=b.price_at_booking,
         salon_address_at_booking=b.salon_address_at_booking,
@@ -222,6 +271,9 @@ def update_booking_by_token(token: str, body: UpdateBookingBody, db: Session = D
     if has_time_conflict(db, proposed, exclude_booking_id=b.id):
         raise HTTPException(status.HTTP_409_CONFLICT, detail="Time conflict with another booking")
 
+    _validate_optional_media(db, body.current_hairstyle_media_id, MediaType.current_hairstyle)
+    _validate_optional_media(db, body.inspiration_media_id, MediaType.inspiration)
+
     old_slot = db.get(Slot, b.slot_id)
     if old_slot is None:
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Slot missing")
@@ -233,13 +285,22 @@ def update_booking_by_token(token: str, body: UpdateBookingBody, db: Session = D
         old_slot.is_available = True
         new_slot.is_available = False
 
+    cli = _get_or_create_client(
+        db,
+        email=str(body.client_email),
+        name=body.client_name,
+        phone=body.client_phone,
+        marketing_opt_in=body.marketing_opt_in,
+    )
+
     b.slot_id = new_slot.id
     b.service_id = body.service_id
+    b.client_id = cli.id
     b.location = body.location
     b.home_address = body.home_address.strip() if body.home_address else None
-    b.client_name = body.client_name
-    b.client_email = str(body.client_email)
-    b.client_phone = body.client_phone
+    b.client_note = body.client_note.strip() if body.client_note and body.client_note.strip() else None
+    b.current_hairstyle_media_id = body.current_hairstyle_media_id
+    b.inspiration_media_id = body.inspiration_media_id
     b.status = BookingStatus.edited
     b.price_at_booking = _total_price(db, body.service_id, new_slot, body.location)
     b.salon_address_at_booking = _salon_snapshot(db)

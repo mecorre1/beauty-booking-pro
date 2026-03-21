@@ -15,6 +15,10 @@ class CreateBookingBody(BaseModel):
     client_name: str = Field(min_length=1, max_length=255)
     client_email: EmailStr
     client_phone: str = Field(min_length=3, max_length=64)
+    marketing_opt_in: bool = False
+    client_note: str | None = None
+    current_hairstyle_media_id: int | None = None
+    inspiration_media_id: int | None = None
 
 
 class BookingPublicOut(BaseModel):
@@ -26,6 +30,10 @@ class BookingPublicOut(BaseModel):
     client_name: str
     client_email: str
     client_phone: str
+    marketing_opt_in: bool
+    client_note: str | None
+    current_hairstyle_media_id: int | None
+    inspiration_media_id: int | None
     status: BookingStatus
     price_at_booking: Decimal
     salon_address_at_booking: str
@@ -40,6 +48,10 @@ class UpdateBookingBody(BaseModel):
     client_name: str = Field(min_length=1, max_length=255)
     client_email: EmailStr
     client_phone: str = Field(min_length=3, max_length=64)
+    marketing_opt_in: bool = False
+    client_note: str | None = None
+    current_hairstyle_media_id: int | None = None
+    inspiration_media_id: int | None = None
 
 
 class SalonPublicOut(BaseModel):

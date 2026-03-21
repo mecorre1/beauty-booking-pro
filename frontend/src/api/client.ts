@@ -50,6 +50,10 @@ export type CreateBookingPayload = {
   client_name: string
   client_email: string
   client_phone: string
+  marketing_opt_in?: boolean
+  client_note?: string | null
+  current_hairstyle_media_id?: number | null
+  inspiration_media_id?: number | null
 }
 
 export type BookingPublic = {
@@ -61,6 +65,10 @@ export type BookingPublic = {
   client_name: string
   client_email: string
   client_phone: string
+  marketing_opt_in: boolean
+  client_note: string | null
+  current_hairstyle_media_id: number | null
+  inspiration_media_id: number | null
   status: string
   price_at_booking: string
   salon_address_at_booking: string

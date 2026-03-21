@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
@@ -14,8 +16,20 @@ engine = create_engine(settings.database_url, connect_args=connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
+def run_migrations(*, connection=None) -> None:
+    """Apply Alembic migrations to `head`. Pass `connection` for tests (shared in-memory engine)."""
+    from alembic import command
+    from alembic.config import Config
+
+    backend_root = Path(__file__).resolve().parent.parent
+    cfg = Config(str(backend_root / "alembic.ini"))
+    if connection is not None:
+        cfg.attributes["connection"] = connection
+    command.upgrade(cfg, "head")
+
+
 def init_db() -> None:
-    """Create tables if missing (idempotent). Imports models so metadata is populated."""
+    """Run migrations and idempotent seeds."""
     import app.models  # noqa: F401
 
     from app.seed_admin import seed_bootstrap_admin
@@ -23,7 +37,7 @@ def init_db() -> None:
     from app.seed_salon import seed_salon
     from app.seed_services import seed_services
 
-    Base.metadata.create_all(bind=engine)
+    run_migrations()
     with SessionLocal() as session:
         seed_services(session)
         seed_salon(session)

@@ -17,10 +17,13 @@ You are performing spec-driven development. docs/SPEC.md is the source of truth 
 - Keep code simple and readable over clever
 - Add a short comment when a choice is non-obvious
 
-## User story sequencing
+## Database migrations
+- Always use Alembic for database schema changes
+- Every time a model is added or modified, generate an Alembic migration script before applying it
+- Never modify the DB schema directly - always go through migrations
+- Migration scripts must be reviewed before running
 - Before starting any task, check `docs/user-stories/` for stories marked `In progress`. If one exists, continue it before starting anything new.
-- When a story is built, run the tests and validate that acceptance criteria passes. If so, you may consider is complete.
-- When a story is complete, mark it as `Done` and suggest the next `To do` story.
+- When a story is complete, mark it as `Done`, commit all changes to the main branch with the message format: `feat: US-XXX - [US title]`, then suggest the next `To do` story.
 - When writing user stories, always use `docs/templates/us-template.md` as the template.
 
 ## Testing

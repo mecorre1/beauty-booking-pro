@@ -10,6 +10,8 @@ type Row = {
   slot_start_time: string
   client_name: string
   client_email: string
+  client_phone: string
+  client_note: string | null
   status: string
   service_type: string
 }

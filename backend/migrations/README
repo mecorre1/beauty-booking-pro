@@ -1,0 +1,14 @@
+Single-database Alembic setup for the FastAPI backend.
+
+Configuration lives in ../alembic.ini; runtime URL and SQLite pragmas are applied in env.py from app.config.settings (not the placeholder URL in the INI).
+
+Greenfield / new checkout:
+  cd backend
+  alembic upgrade head
+  (or start the API so init_db() runs migrations, then seeds services/salon/prices/bootstrap admin.)
+
+Tests: conftest passes an open SQLAlchemy connection via Config.attributes["connection"] so migrations run on the shared in-memory SQLite engine.
+
+Existing SQLite files that were created only with Base.metadata.create_all() before revision 0a7dfe8320d0:
+  There is no in-repo data migration from the old schema (inline client columns on bookings, slots.price, etc.).
+  Back up data, remove the old DB file, then alembic upgrade head — or hand-write a custom migration (batch/recreate on SQLite).
